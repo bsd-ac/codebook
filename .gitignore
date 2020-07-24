@@ -1,7 +1,6 @@
 # manually added files
 
 **/NUL
-**/test*.cc
 *.exe
 *.out
 *.o
