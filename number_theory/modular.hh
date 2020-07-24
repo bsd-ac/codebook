@@ -4,11 +4,32 @@
 #include <cstdint>
 #include <iostream>
 
-#include "nt.hh"
-
 namespace codebook {
 
 using namespace std;
+
+template <typename T> inline T mpow(T a, long long n) {
+  T ans = 1;
+  while (n) {
+    if (n % 2 == 1)
+      ans *= a;
+    n >>= 1;
+    a *= a;
+  }
+  return ans;
+}
+
+template <typename T> inline T mpow(T a, long long n, T MOD){
+  T ans = 1;
+  while (n) {
+    if (n % 2 == 1)
+      ans = (ans * a) % MOD;
+    n >>= 1;
+    a = (a * a) % MOD;
+  }
+  ans = (ans + MOD) % MOD;
+  return ans;
+}
 
 // MOD needs to be prime for inverse and division to work
 // if you are only going to be using addition/multiplication
