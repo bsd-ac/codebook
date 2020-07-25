@@ -31,6 +31,17 @@ template <typename T> inline T mpow(T a, long long n, T MOD){
   return ans;
 }
 
+template <typename T> inline T inverse(T a, T n){
+  T u = 0, v = 1;
+  while (a != 0) {
+    T t = n / a;
+    n -= t * a; swap(a, n);
+    u -= t * v; swap(u, v);
+  }
+  assert(n == 1);
+  return u;
+}
+
 // MOD needs to be prime for inverse and division to work
 // if you are only going to be using addition/multiplication
 // then MOD doesn't need to be prime
@@ -76,31 +87,23 @@ template <int64_t MOD> struct modular {
   }
 
   modular operator+(const modular &m) const {
-    modular<MOD> nn(n);
-    nn += m;
-    return nn;
+    return modular(*this) += m;
   }
   modular operator-(const modular &m) const {
-    modular<MOD> nn(n);
-    nn -= m;
-    return nn;
+    return modular(*this) -= m;
   }
   modular operator*(const modular &m) const {
-    modular<MOD> nn(n);
-    nn *= m;
-    return nn;
+    return modular(*this) *= m;
   }
 
-  modular inverse() const { return mpow(*this, MOD - 2); }
+  modular inverse() const { return codebook::inverse(n, MOD); }
 
   modular &operator/=(const modular &m) {
     *this *= m.inverse();
     return *this;
   }
   modular operator/(const modular &m) const {
-    modular<MOD> nn(n);
-    nn /= m;
-    return nn;
+    return modular(*this) /= m;
   }
 
   bool operator==(const modular &t) const { return n == t.n; }
