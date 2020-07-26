@@ -21,7 +21,7 @@ template <typename T, int64_t rootx, size_t root_pw> struct poly {
   static constexpr size_t CUTOFF = 128;
   const T root = (T)rootx;
 
-  void normalize() {
+  static inline void normalize() {
     while (!a.empty() && a.back() == (T)0)
       a.pop_back();
   }
@@ -31,7 +31,7 @@ template <typename T, int64_t rootx, size_t root_pw> struct poly {
   poly(const vector<T> &t) : a(t) { normalize(); }
   poly(const poly &t) : a(t.a) { normalize(); }
 
-  poly operator=(const poly &t) {
+  poly &operator=(const poly &t) {
     a = t.a;
     normalize();
     return *this;
@@ -41,18 +41,16 @@ template <typename T, int64_t rootx, size_t root_pw> struct poly {
 
   T operator[](const size_t k) const { return a[k]; }
 
-  bool operator == (const poly& p){
-    if(a.size() != p.size())
+  bool operator==(const poly &p) {
+    if (a.size() != p.size())
       return false;
-    for(int i = 0; i < a.size(); i++)
-      if(a[i] != p[i])
+    for (int i = 0; i < a.size(); i++)
+      if (a[i] != p[i])
         return false;
     return true;
   }
 
-  bool operator != (const poly& p){
-    return !(p == (*this));
-  }
+  bool operator!=(const poly &p) { return !(p == (*this)); }
 
   poly &operator+=(const poly &t) {
     a.resize(max(a.size(), t.size()));
@@ -74,8 +72,7 @@ template <typename T, int64_t rootx, size_t root_pw> struct poly {
   poly operator-(const poly &t) const { return poly(*this) -= t; }
 
   poly slow_multiply(const poly &t) const {
-    vector<T> c;
-    c.resize(a.size() + t.size() - 1, 0);
+    vector<T> c(a.size() + t.size() - 1, 0);
     for (size_t i = 0; i < a.size(); i++)
       for (size_t j = 0; j < t.size(); j++)
         c[i + j] += a[i] * t[j];
@@ -102,7 +99,7 @@ template <typename T, int64_t rootx, size_t root_pw> struct poly {
   }
 
   poly &operator*=(const poly &p) {
-    if (min(a.size(), p.size()) < CUTOFF)
+    if (min(a.size(), p.size()) <= CUTOFF)
       a = slow_multiply(p).a;
     else {
       a = fast_multiply(p).a;
@@ -178,33 +175,56 @@ template <typename T, int64_t rootx, size_t root_pw> struct poly {
     return {q, r};
   }
 
-  pair<poly, poly> fast_divide(const poly &p) const { 
+  pair<poly, poly> fast_divide(const poly &p) const {
     if (p.size() > a.size())
-      return { (poly)0, *this};
+      return {(poly)0, *this};
     int d = a.size() - p.size();
-    poly q = (reverse(d + 1) * p.reverse(d + 1).inverse(d + 1)).mod_xk(d + 1).reverse(d + 1, 1);
-    return {q, *this - (p*q)};
+    poly q = (reverse(d + 1) * p.reverse(d + 1).inverse(d + 1))
+                 .mod_xk(d + 1)
+                 .reverse(d + 1, 1);
+    return {q, *this - (p * q)};
   }
 
   pair<poly, poly> divide(const poly &p) const {
     int d = min(p.size(), a.size() - p.size());
-    if(d < CUTOFF)
+    if (d < CUTOFF)
       return slow_divide(p);
     else
       return fast_divide(p);
   }
 
-  poly &operator /= (const poly& p){
+  poly &operator/=(const poly &p) {
     *this = divide(p).first;
     return *this;
   }
-  poly &operator %= (const poly& p){
+  poly &operator%=(const poly &p) {
     *this = divide(p).second;
     return *this;
   }
 
-  poly operator /(const poly &p) { return poly(*this) /= p; }
-  poly operator %(const poly &p) { return poly(*this) %= p; }
+  poly operator/(const poly &p) { return poly(*this) /= p; }
+  poly operator%(const poly &p) { return poly(*this) %= p; }
+
+  vector<poly> poly_tree(const vector<T> &roots) {
+    vector<poly> tree;
+    size_t n = roots.size();
+    poly xx((T)1);
+    xx <<= 1;
+    for (int i = 0; i < n; i++) {
+      tree.push_back(xx - roots[i]);
+    }
+    size_t i = 0;
+    while (i <= tree.size() - 2) {
+      tree.push_back(tree[i] * tree[i + 1]);
+      i += 2;
+    }
+    std::reverse(tree.begin(), tree.end());
+    return tree;
+  }
+
+  poly taylor_shift(const T& k){
+
+  }
 };
 
 // for now root is going to be int64_t

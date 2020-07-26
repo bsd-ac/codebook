@@ -16,11 +16,16 @@ typedef poly<base, 15311432, root_pw> xpoly;
 int main(){
 
   vector<base> a;
-  for(int i = 0; i < 10000; i++)
+  for(int i = 0; i < 1000000; i++)
     a.push_back(1);
   xpoly p(a), q(a);
   xpoly pq = p * q;
-  cout << pq / p << endl << pq / q << endl << ((pq/p) == q) << endl << ((pq/q) == p) << endl;
+
+  //cout << ((pq/p) == q) << endl << ((pq/q) == p) << endl;
+
+  vector<base> roots {-1, -1, -1};
+  auto tree = p.poly_tree(roots);
+  cout << tree[0] << endl;
   /*
   auto qr = p.slow_divide(q);
   cout << qr.second.size() << endl;
