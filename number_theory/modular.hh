@@ -114,7 +114,7 @@ template <int64_t MOD> struct modular {
 
   modular &operator++() { *this += 1; return *this; }
   modular &operator--() { *this -= 1; return *this; }
-  modular &operator<<(const size_t k) { *this *= mpow(2, k); return *this; }
+  modular &operator<<(const size_t k) { *this *= mpow(2, k, MOD); return *this; }
   modular &operator>>(const size_t k) { int64_t p = inverse(2, MOD); *this *= mpow(p, k); return *this; }
 
   operator int64_t() const { return n; }
