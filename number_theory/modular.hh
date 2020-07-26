@@ -49,40 +49,37 @@ template <int64_t MOD> struct modular {
   int64_t n;
 
   constexpr modular() : n(0) {}
-  constexpr modular(const int64_t &m) : n(m) {
-    n %= MOD;
-    if (n < 0)
-      n += MOD;
-  }
-  constexpr modular(const modular &m) : n(m.n) {
+  
+  constexpr modular(const modular &m) : n(m.n) {}
+
+  template <typename X>
+  constexpr modular(const X &m) {
+    n = (int64_t) m;
     n %= MOD;
     if (n < 0)
       n += MOD;
   }
 
   modular &operator=(const modular &m) {
-    n = m.n % MOD;
-    if (n < 0)
-      n += MOD;
+    n = m.n;
     return *this;
   }
 
   modular &operator+=(const modular &m) {
-    n = (n + m.n) % MOD;
-    if (n < 0)
-      n += MOD;
+    n += m.n;
+    n %= MOD;
     return *this;
   }
   modular &operator-=(const modular &m) {
-    n = (n - m.n) % MOD;
+    n -= m.n;
+    n %= MOD;
     if (n < 0)
       n += MOD;
     return *this;
   }
   modular &operator*=(const modular &m) {
-    n = (n * m.n) % MOD;
-    if (n < 0)
-      n += MOD;
+    n *= m.n;
+    n %= MOD;
     return *this;
   }
 
@@ -110,13 +107,14 @@ template <int64_t MOD> struct modular {
   bool operator!=(const modular &t) const { return n != t.n; }
 
   operator int64_t() const { return n; }
+
+  friend istream &operator>>(istream &in, modular &x) {
+    return in >> x.n;
+  }
+  friend ostream &operator<<(ostream &out, const modular &x) {
+    return out << x.n;
+  }
 };
-template <long long T> istream &operator>>(istream &in, modular<T> &x) {
-  return in >> x.n;
-}
-template <long long T> ostream &operator<<(ostream &out, const modular<T> &x) {
-  return out << x.n;
-}
 
 } // namespace codebook
 
