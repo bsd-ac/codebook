@@ -53,8 +53,7 @@ template <int64_t MOD> struct modular {
   constexpr modular(const modular &m) : n(m.n) {}
 
   template <typename X>
-  constexpr modular(const X &m) {
-    n = (int64_t) m;
+  constexpr modular(const X &m) : n(m) {
     n %= MOD;
     if (n < 0)
       n += MOD;
