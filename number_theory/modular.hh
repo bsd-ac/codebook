@@ -19,7 +19,7 @@ template <typename T> inline T mpow(T a, long long n) {
   return ans;
 }
 
-template <typename T> inline T mpow(T a, long long n, T MOD){
+template <typename T> inline T mpow(T a, long long n, T MOD) {
   T ans = 1;
   while (n) {
     if (n % 2 == 1)
@@ -31,12 +31,14 @@ template <typename T> inline T mpow(T a, long long n, T MOD){
   return ans;
 }
 
-template <typename T> inline T inverse(T a, T n){
+template <typename T> inline T inverse(T a, T n) {
   T u = 0, v = 1;
   while (a != 0) {
     T t = n / a;
-    n -= t * a; swap(a, n);
-    u -= t * v; swap(u, v);
+    n -= t * a;
+    swap(a, n);
+    u -= t * v;
+    swap(u, v);
   }
   assert(n == 1);
   return u;
@@ -49,11 +51,10 @@ template <int64_t MOD> struct modular {
   int64_t n;
 
   constexpr modular() : n(0) {}
-  
+
   constexpr modular(const modular &m) : n(m.n) {}
 
-  template <typename X>
-  constexpr modular(const X &m) : n(m) {
+  template <typename X> constexpr modular(const X &m) : n(m) {
     n %= MOD;
     if (n < 0)
       n += MOD;
@@ -82,15 +83,9 @@ template <int64_t MOD> struct modular {
     return *this;
   }
 
-  modular operator+(const modular &m) const {
-    return modular(*this) += m;
-  }
-  modular operator-(const modular &m) const {
-    return modular(*this) -= m;
-  }
-  modular operator*(const modular &m) const {
-    return modular(*this) *= m;
-  }
+  modular operator+(const modular &m) const { return modular(*this) += m; }
+  modular operator-(const modular &m) const { return modular(*this) -= m; }
+  modular operator*(const modular &m) const { return modular(*this) *= m; }
 
   modular inverse() const { return codebook::inverse(n, MOD); }
 
@@ -98,11 +93,12 @@ template <int64_t MOD> struct modular {
     *this *= m.inverse();
     return *this;
   }
-  modular operator/(const modular &m) const {
-    return modular(*this) /= m;
-  }
+  modular operator/(const modular &m) const { return modular(*this) /= m; }
 
-  modular &operator%=(const modular &m) { n %= m.n; return *this; }
+  modular &operator%=(const modular &m) {
+    n %= m.n;
+    return *this;
+  }
   modular operator%(const modular &m) { return modular(*this) %= m; }
 
   bool operator==(const modular &t) const { return n == t.n; }
@@ -112,16 +108,27 @@ template <int64_t MOD> struct modular {
   bool operator<=(const modular &t) const { return n <= t.n; }
   bool operator>=(const modular &t) const { return n >= t.n; }
 
-  modular &operator++() { *this += 1; return *this; }
-  modular &operator--() { *this -= 1; return *this; }
-  modular &operator<<(const size_t k) { *this *= mpow(2, k, MOD); return *this; }
-  modular &operator>>(const size_t k) { int64_t p = inverse(2, MOD); *this *= mpow(p, k, MOD); return *this; }
+  modular &operator++() {
+    *this += 1;
+    return *this;
+  }
+  modular &operator--() {
+    *this -= 1;
+    return *this;
+  }
+  modular &operator<<(const size_t k) {
+    *this *= mpow(2, k, MOD);
+    return *this;
+  }
+  modular &operator>>(const size_t k) {
+    int64_t p = inverse(2, MOD);
+    *this *= mpow(p, k, MOD);
+    return *this;
+  }
 
   operator int64_t() const { return n; }
 
-  friend istream &operator>>(istream &in, modular &x) {
-    return in >> x.n;
-  }
+  friend istream &operator>>(istream &in, modular &x) { return in >> x.n; }
   friend ostream &operator<<(ostream &out, const modular &x) {
     return out << x.n;
   }
