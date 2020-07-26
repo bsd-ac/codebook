@@ -102,6 +102,9 @@ template <int64_t MOD> struct modular {
     return modular(*this) /= m;
   }
 
+  modular &operator%=(const modular &m) { n %= m.n; return *this; }
+  modular operator%(const modular &m) { return modular(*this) %= m; }
+
   bool operator==(const modular &t) const { return n == t.n; }
   bool operator!=(const modular &t) const { return n != t.n; }
   bool operator<(const modular &t) const { return n < t.n; }
