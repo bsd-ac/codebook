@@ -117,7 +117,7 @@ template <int64_t MOD> struct modular {
     return *this;
   }
 
-  operator int64_t() const { return n; }
+  explicit operator int64_t() const { return n; }
 
   friend istream &operator>>(istream &in, modular &x) { return in >> x.n; }
   friend ostream &operator<<(ostream &out, const modular &x) {
