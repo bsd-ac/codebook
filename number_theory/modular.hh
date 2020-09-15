@@ -67,7 +67,8 @@ template <int64_t MOD> struct modular {
 
   modular &operator+=(const modular &m) {
     n += m.n;
-    n %= MOD;
+    if (n > MOD)
+      n %= MOD;
     return *this;
   }
   modular &operator-=(const modular &m) {
